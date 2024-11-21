@@ -20,7 +20,7 @@ app.get('/api/todos', [authJwt.verifyToken,authJwt.isExist], async (req,res)=>{
     res.status(500).send('Erreur lors de la récupération des tâches');
   }
 })
-app.post('/api/todos', [authJwt.verifyToken,authJwt.isExist],async (req, res) => {
+app.post('/api/todos', [authJwt.verifyToken,authJwt.isExist,authJwt.isAdmin],async (req, res) => {
     try {
       const newTodo = new Todo({
         title: req.body.title,
@@ -51,7 +51,7 @@ app.get('/api/todos/:id', [authJwt.verifyToken,authJwt.isExist],async (req, res)
     }
     
 });
-app.put('/api/todos/:id',[authJwt.verifyToken,authJwt.isExist], async (req, res) => {
+app.put('/api/todos/:id',[authJwt.verifyToken,authJwt.isExist,authJwt.isAdmin], async (req, res) => {
     const todo = await Todo.findById(req.params.id);
     if (!todo) {
         return res.status(404).send('Tâche non trouvée');
@@ -72,5 +72,6 @@ app.get('/api/unsecured',(req,res)=>{
   res.send('unsecured');
 })
 app.post("/api/auth/signup", authcontroller.signup);
+app.post("/api/auth/signup/admin", authcontroller.signupAdmin);
 app.post("/api/auth/signin",authcontroller.signin);
 module.exports = app;

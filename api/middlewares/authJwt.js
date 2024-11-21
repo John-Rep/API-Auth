@@ -27,9 +27,18 @@ isExist = async (req, res, next) => {
   }
   next();
 };
+isAdmin = async (req, res, next) => {
+  const user = await User.findById(req.userId);
+  if (!user.admin) {
+    res.status(403).send({ message: "User is not admin" });
+    return;
+  }
+  next();
+};
 
 const authJwt = {
   verifyToken,
   isExist,
+  isAdmin,
 };
 module.exports = authJwt;

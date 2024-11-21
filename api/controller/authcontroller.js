@@ -8,6 +8,7 @@ exports.signup = async (req, res) => {
       username: req.body.username,
       name: req.body.name,
       password: bcrypt.hashSync(req.body.password, 8),
+      admin: false,
     });
     try {
       await user.save();
@@ -16,6 +17,22 @@ exports.signup = async (req, res) => {
       console.log(err);
       res.status(500).send("Erreur lors de la création de compte");
     }
+};
+
+exports.signupAdmin = async (req, res) => {
+  const user = new User({
+    username: req.body.username,
+    name: req.body.name,
+    password: bcrypt.hashSync(req.body.password, 8),
+    admin: true,
+  });
+  try {
+    await user.save();
+    res.send({ message: "Admin was registered successfully!" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Erreur lors de la création de compte");
+  }
 };
 
 exports.signin = async (req, res) => {
