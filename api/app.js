@@ -12,6 +12,7 @@ mongoose.connect('mongodb://localhost:27017/api-todos?retryWrites=true&w=majorit
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+
 app.get('/api/todos', [authJwt.verifyToken,authJwt.isExist,rateLimiter], async (req,res)=>{
  try{
     const todos = await Todo.find();
