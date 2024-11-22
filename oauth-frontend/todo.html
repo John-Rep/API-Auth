@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend JWT</title>
+</head>
+<body>
+    <h1>Frontend JWT avec GitHub</h1>
+    <button id="getData">Recuperer les tâches</button>
+    <div id="result"></div>
+
+    <script>
+        const backendURL = "http://localhost:3000"; // URL du backend
+
+        const getDataButton = document.getElementById("getData");
+        const resultDiv = document.getElementById("result");
+        const params = new URLSearchParams(window.location.search);
+        const accessToken = params.get('access_token');
+
+        getDataButton.addEventListener("click", async () => {
+            try {
+                const response = await fetch(`${backendURL}/api/todos`, {
+                                method: "GET", // ou POST, PUT, DELETE, etc.
+                                 headers: {
+                                    "x-access-token": accessToken,
+                                    "Content-Type": "application/json", // Indique que le corps de la requête est en JSON
+                                },
+                    })
+                if (response.status === 401) {
+                    resultDiv.textContent = "Non autorisé. Veuillez vous connecter.";
+                    return;
+                }
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error("Erreur:", error);
+                resultDiv.textContent = "Erreur lors de la récupération des données.";
+            }
+        });
+    </script>
+</body>
+</html>

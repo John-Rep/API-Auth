@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend JWT</title>
+</head>
+<body>
+    <h1>Frontend JWT avec GitHub</h1>
+    <button id="login">Se connecter avec GitHub</button>
+    <button id="getData">Obtenir des données protégées</button>
+    <div id="result"></div>
+
+    <script>
+        const backendURL = "http://localhost:8080"; // URL du backend
+
+        const loginButton = document.getElementById("login");
+        const getDataButton = document.getElementById("getData");
+        const resultDiv = document.getElementById("result");
+
+        loginButton.addEventListener("click", () => {
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=Ov23liNOZcVDuhI6SBBN&redirect_uri=http://localhost:3000/api/oauth/redirect`; // Redirige vers le backend pour l'authentification
+        });
+
+        getDataButton.addEventListener("click", async () => {
+            try {
+                const response = await fetch(`${backendURL}/api/protected`, {
+                    credentials: "include", // Envoie les cookies au backend
+                });
+                if (response.status === 401) {
+                    resultDiv.textContent = "Non autorisé. Veuillez vous connecter.";
+                    return;
+                }
+                const data = await response.json();
+                resultDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                console.error("Erreur:", error);
+                resultDiv.textContent = "Erreur lors de la récupération des données.";
+            }
+        });
+    </script>
+</body>
+</html>
