@@ -67,6 +67,7 @@ exports.signin = async (req, res) => {
   
   exports.oauth2Redirect = async (req, res) => {
     try {
+      console.log("Query Code: " + req.query.code);
       const response = await axios({
         method: "POST",
         url: `${GITHUB_URL}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${req.query.code}`,
@@ -74,6 +75,7 @@ exports.signin = async (req, res) => {
           Accept: "application/json",
         },
       });
+      console.log(response.data);
       const userData = await axios({
         method: "GET",
         url: "https://api.github.com/user",
