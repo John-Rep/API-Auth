@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Todo = require('./todo');
 const authcontroller = require('./controller/authcontroller');
 const authJwt = require('./middlewares/authJwt');
+const rateLimiter = require('./middlewares/ratelimiter');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -11,7 +12,7 @@ mongoose.connect('mongodb://localhost:27017/api-todos?retryWrites=true&w=majorit
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-app.get('/api/todos', [authJwt.verifyToken,authJwt.isExist], async (req,res)=>{
+app.get('/api/todos', [authJwt.verifyToken,authJwt.isExist,rateLimiter], async (req,res)=>{
  try{
     const todos = await Todo.find();
     const todoJson = JSON.stringify(todos);
